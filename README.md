@@ -1,4 +1,4 @@
-# pryMeLibMutantes
+# Proyecto - Mutantes
 Proyecto para mercado libre - Mutantes; creada con SpringBoot, MYSQL, JPA. Creado por **Angy Natalia Muñoz Bolaños.**
 
 # Ajustar la BD
