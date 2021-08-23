@@ -6,4 +6,4 @@ Para ajustar los datos de la BD, se debe modificar el archivo application.proper
 
 
 # Levantar los servicios
-Para levantar los servicios, se ejecuta el archivo MutantesApplication
+Para levantar los servicios, se ejecuta el archivo MutantesApplication.java
