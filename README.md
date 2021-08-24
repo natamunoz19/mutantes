@@ -10,3 +10,7 @@ Para levantar los servicios, se ejecuta el archivo MutantesApplication.java
 # Generar JAR
 Para generar el JAR es necesario correr en la carpeta raiz del proyecto, el comando **mvn clean install**. De esta forma se generara en la carpeta **DirectorioRaizProyecto/Target/**
  el JAR correspondiente a la aplicacion para cargar al servidor.
+
+# Endpoints (Proyecto local)
+GET: http://localhost:8080/mercadolibre/stats
+POST: http://localhost:8080/mercadolibre/mutant
