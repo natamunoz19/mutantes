@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mercadolibre")
-class MutantesController {
+public class MutanteController {
 
 
     @Autowired
@@ -28,7 +28,7 @@ class MutantesController {
         mr.setCount_mutant_dna(lista.stream().filter(m -> m.isMutant() == 1).count());
         mr.setCount_human_dna(lista.stream().filter(m -> m.isMutant() == 0).count());
         if(mr.getCount_human_dna() != 0){
-            mr.setRatio(Float.valueOf(mr.getCount_mutant_dna()/mr.getCount_human_dna()));
+            mr.setRatio(Float.valueOf(mr.getCount_mutant_dna())/Float.valueOf(mr.getCount_human_dna()));
         }else{
             mr.setRatio(Float.valueOf(1));
         }
@@ -37,20 +37,28 @@ class MutantesController {
 
     @PostMapping("/mutant")
     public ResponseEntity validarMutante(@RequestBody String dna){
+        boolean ok = this.validarCadena(dna.substring(dna.indexOf("[")+1, dna.indexOf("]")));
+        if(ok){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    public boolean validarCadena(String dna){
         Boolean valido = false;
-        String dnaString = dna.substring(dna.indexOf("[")+1, dna.indexOf("]"));
-        String dnaArray[];
-        Mutante mu = this.getMutante(dnaString);
+        Mutante mu = service.obtenerMutanteByDna(dna);
 
         if(mu.getId() == null){
-            dnaArray = dnaString.replace(" ", "").split(",");
-            for(int i=0; i<dnaArray.length; i++){
-                for(int j=0; j<dnaArray[i].length(); j++){
-                    if(j<dnaArray[i].length()-3){
+            String[] dnaArray = dna.replace(" ", "").split(",");
+            int n = dnaArray.length;
+            for(int i=0; i<n; i++){
+                for(int j=0; j<n; j++){
+                    if(j<n-3){
                         valido = validarLetraHor(dnaArray, i, j, 1);
                         if(valido){ break; }
 
-                        if(i<dnaArray.length-3){
+                        if(i<n-3){
                             valido = validarLetraDiag1(dnaArray, i, j, 1);
                             if(valido){ break; }
                         }
@@ -60,7 +68,7 @@ class MutantesController {
                             if(valido){ break; }
                         }
                     }
-                    if(i<dnaArray.length-3){
+                    if(i<n-3){
                         valido = validarLetraVer(dnaArray, i, j, 1);
                         if(valido){ break; }
                     }
@@ -73,25 +81,14 @@ class MutantesController {
                 mu.setMutant(0);
             }
             service.guardarUsuario(mu);
-        }
-        if(mu.isMutant() == 1){
-            return new ResponseEntity<>(HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            if(mu.isMutant()==0){
+                valido = false;
+            }else{
+                valido = true;
+            }
         }
-        //return mu.isMutant();
-    }
-
-    public Mutante getMutante(String dna){
-        ArrayList<Mutante> lista = service.obtenerMutanteByDna(dna);
-        Mutante m;
-        if(lista.size() == 0){
-            m = new Mutante();
-            m.setDna(dna);
-        }else{
-            m=lista.get(0);
-        }
-        return m;
+        return valido;
     }
 
     public boolean validarLetraHor(String[] dna, int posa, int posb, int cant){

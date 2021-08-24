@@ -16,19 +16,21 @@ public class MutanteService {
         return mutanteRepository.save(m);
     }
 
-    public ArrayList<Mutante> obtenerMutanteByDna(String dna){
-        return (ArrayList<Mutante>) mutanteRepository.findByDna(dna);
+    public Mutante obtenerMutanteByDna(String dna){
+        ArrayList<Mutante> lista = mutanteRepository.findByDna(dna);
+        Mutante m;
+        if(lista.size() == 0){
+            m = new Mutante();
+            m.setDna(dna);
+        }else{
+            m=lista.get(0);
+        }
+        return m;
     }
 
     public ArrayList<Mutante> listAll(){
         return (ArrayList<Mutante>) mutanteRepository.findAll();
     }
 
-    public Long countMutantes(){
-        return mutanteRepository.findAll().stream().filter(m -> m.isMutant() == 1).count();
-    }
 
-    public Long countHumanos(){
-        return mutanteRepository.findAll().stream().filter(m -> m.isMutant() == 0).count();
-    }
 }
